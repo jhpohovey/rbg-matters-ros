@@ -116,13 +116,15 @@ class GraspNetDataset(Dataset):
             normal = torch.tensor([])
         rgb = Image.open(rgb_path)
         rgb = self.rgb_transform(rgb)
-
+        
         depth = Image.open(depth_path)
-        resize = transforms.Resize((288, 384))
-        totensor = transforms.ToTensor()
-        depth_trans_list = [resize]
-        depth_trans = transforms.Compose(depth_trans_list)
+        print(f"Depth image type: {type(depth)}")
+        print(f"Depth image dtype: {depth.dtype if isinstance(depth, np.ndarray) else 'PIL mode: ' + depth.mode}")
+        if (depth.mode == 'I;16'):
+            depth = depth.convert('I') # fix for PIL issue with 16-bit depth images
+        depth_trans = transforms.Compose([transforms.Resize((288, 384)),])
         depth = depth_trans(depth)
+        totensor = transforms.ToTensor()
         depth = totensor(np.array(depth))
 
         label = torch.tensor(

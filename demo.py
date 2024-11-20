@@ -1,4 +1,3 @@
-__author__ = "Minghao Gou"
 __version__ = "1.0"
 
 import numpy as np
@@ -48,6 +47,12 @@ parser.add_argument(
     default=LABEL_DIR,
     help="Root folder of realsense labels",
 )
+parser.add_argument(
+    "--split", 
+    default="test_similar",
+    choices=["train", "all", "test", "test_seen", "test_similar", "test_novel"], 
+    help="select segment of data to operate on"
+)
 parser.add_argument("--use_normal", type=str2bool, default=False)
 parser.add_argument("--normal_only", type=str2bool, default=False)
 args = parser.parse_args()
@@ -76,18 +81,20 @@ graspnet_dataset = GraspNetDataset(
     use_normal=args.use_normal,
     label_root=test_label_root,
     camera=args.camera,
-    split="all",
+    split=args.split,
     grayscale=False,
     colorjitter_scale=0,
     random_crop=0,
 )
 
 rgb, _, label, normal = graspnet_dataset[args.scene_id, args.camera, args.ann_id]
+print(normal.shape, normal)
 
 rgb = rgb.unsqueeze(0).to(device)
 normal = normal.unsqueeze(0).to(device)
+print(normal.shape, normal)
 label = label.unsqueeze(0).to(device)
-
+exit()
 # the first time it will run very slowly.
 prob_map = net(rgb, normal)
 
@@ -122,6 +129,7 @@ gg = convert_grasp(
     delta_depth_list=[-0.02, 0, 0.02],
     flip=False,
     device="cuda:0",
+    split=args.split,
 )
 
 gg.sort_by_score()

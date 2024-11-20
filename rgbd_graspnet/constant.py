@@ -1,6 +1,5 @@
-__author__ = "Minghao Gou"
 __version__ = "1.0"
 
-GRASPNET_ROOT = "/home/gmh/graspnet"
-LABEL_DIR = "/home/gmh/rgbd_labels"
-NORMALS_DIR = "/home/gmh/normals"
+GRASPNET_ROOT = "/home/john/Desktop/rgb-matters-ros/src/rgb_matters/graspnet_data"
+LABEL_DIR = "/home/john/Desktop/rgb-matters-ros/src/rgb_matters/rgbd_labels"
+NORMALS_DIR = "/home/john/Desktop/rgb-matters-ros/src/rgb_matters/normals"

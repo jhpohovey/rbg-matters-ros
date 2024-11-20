@@ -9,3 +9,6 @@ events.out.*
 *.json
 /vis
 /weights
+/graspnet_data
+/rgbd_labels
+/normals

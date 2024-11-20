@@ -338,7 +338,7 @@ def gen_camera_label(graspnet_root, scene_id, camera, dump_folder):
         np.save(os.path.join(camera_dir, "%04d.npy" % (ann_id)), grid_label)
 
 
-def gen_scene_label(graspnet_root, scene_id, dump_folder, camera="both"):
+def gen_scene_label(graspnet_root, scene_id, dump_folder, camera="both", split="all"):
     """
     **Input:**
 
@@ -356,8 +356,8 @@ def gen_scene_label(graspnet_root, scene_id, dump_folder, camera="both"):
     """
     g = dict()
     cameras = ["realsense", "kinect"] if camera == "both" else [camera]
-    g["kinect"] = GraspNet(root=graspnet_root, camera="kinect", split="all")
-    g["realsense"] = GraspNet(root=graspnet_root, camera="realsense", split="all")
+    g["kinect"] = GraspNet(root=graspnet_root, camera="kinect", split=split)
+    g["realsense"] = GraspNet(root=graspnet_root, camera="realsense", split=split)
     grasp_labels = g["kinect"].loadGraspLabels(g["kinect"].getObjIds(scene_id))
     os.makedirs(dump_folder, exist_ok=True)
     collision_labels = g["kinect"].loadCollisionLabels(scene_id)

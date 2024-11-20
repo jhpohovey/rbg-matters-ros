@@ -1,4 +1,3 @@
-__author__ = "Minghao Gou"
 __version__ = "1.0"
 
 import cv2
@@ -19,12 +18,19 @@ if __name__ == "__main__":
         choices=["realsense", "kinect", "both"],
         help="which camera(s) to generate",
     )
+    parser.add_argument(
+        "--split", 
+        default="test_similar",
+        choices=["train", "all", "test", "test_seen", "test_similar", "test_novel"], 
+        help="select segment of data to operate on"
+    )
     parser.add_argument("--skip", default=True, help="skip existed normals")
     args = parser.parse_args()
     cameras = ["realsense", "kinect"] if args.camera == "both" else [args.camera]
+    split = args.split
     for camera in cameras:
-        g = GraspNet(GRASPNET_ROOT, camera=camera)
-        scene_list = list(range(190))
+        g = GraspNet(GRASPNET_ROOT, camera=camera, split=split)
+        scene_list = list(range(130, 131))
         for scene_id in scene_list:
             for ann_id in tqdm(
                 range(256), "Generating normal for scene {}".format(scene_id)

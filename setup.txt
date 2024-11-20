@@ -1,0 +1,64 @@
+# Assuming that immediately before running this, you ran:
+# mkdir rgb-matters-ros && cd rgb-matters-ros
+mkdir src
+
+sudo apt-get update
+sudo apt-get install cmake libvtk6-dev python3-vtk7 python-sip libosmesa6-dev meshlab libhdf5-dev 
+sudo apt-get install chemical-mime-data lib3ds-1-3 libmuparser2v5 libopenctm1 libosmesa6 libqt5script5 libqt5xmlpatterns5 python-enum34 
+sudo apt-get install libatlas-base-dev gfortran libopenblas-dev libmkl-rt libboost-all-dev libopenimageio-dev mesa-utils assimp-utils python-tk apt-file git vim ros-noetic-desktop-full ros-noetic-moveit
+sudo apt-get install python3-empy
+
+python -m venv myvenv
+source myvenv/bin/activate
+
+cd src/
+git clone https://github.com/GouMinghao/rgb_matters
+cd rgb_matters
+mkdir graspnet_data normals rgbd_labels weights
+cd graspnet_data
+# You can download some of the data from https://graspnet.net/datasets.html. Place this into src/rgb_matters/graspnet_data
+# download and extract collision_labels https://drive.usercontent.google.com/download?id=1p43sntiN9HJZRDFDNpzaEaEYoPY6IWsu&export=download
+# download and extract dex_models https://drive.usercontent.google.com/download?id=1RElNqUHNoA9l_muTGNu7yAc3ql_e7pL3&export=download
+# download and extract grasp_labels https://drive.usercontent.google.com/download?id=1FCV6j2J2eQpVk_ddJXljJvjRT1KU3sJ6&export=download
+# download and extract some subset of scenes (e..g, test scenes similar https://drive.usercontent.google.com/download?id=1xixvgY0yK7TEALq3k7JcJk2_SP_6r8nk&export=download)
+# download and extract object_models https://drive.usercontent.google.com/download?id=1Gxwu2C5wRQ0QwjdA8CbMXx-bYf_wwPT5&export=download
+# in the grasp_net data dir, you should have the following directories:
+    # collision_labels
+    # dex_models
+    # grasp_labels
+    # object_models
+    # scenes
+    # models
+
+
+python3 -m pip install empy==3.3.2 catkin_pkg wheel
+python3 -m pip install torch==1.8.1 torchvision==0.9.1 tensorboard numpy opencv-python open3d==0.10.0.0 tqdm Pillow scipy graspnetAPI==1.2.10 pyyaml
+python3 -m pip install sklearn==0.0 # yes this is very deprecated, but it gets some build errors to shut up
+python3 -m pip install transforms3d==0.3.1
+python3 -m pip install pyqtgraph qtpy
+python3 -m pip install gdown
+
+catkin_make
+source devel/setup.bash
+
+cd rgb_matters-ros/src
+git clone https://github.com/BerkeleyAutomation/autolab_core.git
+cd autolab_core/
+python setup.py install
+cd rgb_matters-ros
+catkin_make
+# if this build fails, open src/autolab_core/package.xml and switch `<version>1.1.0</version>` to  `<version>1.1.1</version>` and try again
+python3 -m pip uninstall autolab_core # otherwise, the ros package won't actually get used
+
+python3 -m pip install transforms3d==0.3.1
+# you will then need to navigate to rgb-matters-ros/myvenv/lib/python3.8/site-packages/transforms3d/quaternions.py 
+# and change all instances of `np.float` to `np.float64` (there are 2)
+
+
+# You should changed src/rgbd_graspnet/constants.py to contain the following (or similar):
+    # GRASPNET_ROOT = "/home/john/Desktop/rgb-matters-ros/src/rgb_matters/graspnet_data"
+    # LABEL_DIR = "/home/john/Desktop/rgb-matters-ros/src/rgb_matters/rgbd_labels"
+    # NORMALS_DIR = "/home/john/Desktop/rgb-matters-ros/src/rgb_matters/normals"
+
+# You can generate labels with python3 gen_labels.py ran from src/rgb_matters/
+python3 gen_labels.py

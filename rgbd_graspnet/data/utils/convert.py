@@ -96,6 +96,7 @@ def convert_grasp(
     flip=False,
     device="cpu",
     inpainting=False,
+    split="test_similar",
 ):
     """
     **Input:**
@@ -149,7 +150,7 @@ def convert_grasp(
     min_thresh = f_label[::-1][top_in_map]
     label[label <= min_thresh] = 0
     origin_gg = GraspGroup()
-    graspnet = GraspNet(root=graspnet_root, camera=camera, split="all")
+    graspnet = GraspNet(root=graspnet_root, camera=camera, split=split)
 
     scene_points, _ = load_cloud(
         scene_idx=scene_id,

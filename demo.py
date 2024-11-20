@@ -94,7 +94,7 @@ rgb = rgb.unsqueeze(0).to(device)
 normal = normal.unsqueeze(0).to(device)
 print(normal.shape, normal)
 label = label.unsqueeze(0).to(device)
-exit()
+
 # the first time it will run very slowly.
 prob_map = net(rgb, normal)
 

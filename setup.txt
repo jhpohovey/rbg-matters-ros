@@ -12,7 +12,7 @@ python -m venv myvenv
 source myvenv/bin/activate
 
 cd src/
-git clone https://github.com/GouMinghao/rgb_matters
+git clone git@github.com:jhpohovey/rbg-matters-ros.git rgb_matters
 cd rgb_matters
 mkdir graspnet_data normals rgbd_labels weights
 cd graspnet_data
